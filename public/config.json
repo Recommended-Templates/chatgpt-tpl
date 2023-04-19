@@ -22,7 +22,7 @@
       "key": "apiKey",
       "value": "",
       "placeholder": "Enter OpenAI API Key",
-      "regExp": "^sk-\\w{48}$",
+      "regExp": "^sk-",
       "regMsg": "Malformed api key"
     }
   ],
@@ -32,7 +32,7 @@
       "key": "logo",
       "value": "",
       "placeholder": "Enter logo URL",
-      "regExp": "^https?\/\/"
+      "regExp": "^http"
     }
   ],
   "Avatar": [
@@ -41,7 +41,7 @@
       "key": "avatar",
       "value": "",
       "placeholder": "https://",
-      "regExp": "^https?\/\/"
+      "regExp": "^http"
     }
   ],
   "Button Link": [
@@ -56,7 +56,7 @@
       "key": "btnLink",
       "value": "",
       "placeholder": "https://",
-      "regExp": "^https?\/\/"
+      "regExp": "^http"
     }
   ]
 }
