@@ -50,6 +50,9 @@
           left: -4px;
           background: #775da6;
         }
+        a {
+          color: #46f3fb;
+        }
       }
     }
   }
@@ -92,10 +95,14 @@ export default {
   computed: {
     chatList() {
       return this.list.map((it) => {
+        console.log(it);
+        const msg = md
+          .render(it.content)
+          .replace(/<a\s/gm, '<a target="_blank" ');
         return {
           ...it,
           isMe: it.role == "user",
-          msg: md.render(it.content), //.replace(/\n/gm, "<br/>")
+          msg,
         };
       });
     },
