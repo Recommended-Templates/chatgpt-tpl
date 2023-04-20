@@ -95,7 +95,6 @@ export default {
   computed: {
     chatList() {
       return this.list.map((it) => {
-        console.log(it);
         const msg = md
           .render(it.content)
           .replace(/<a\s/gm, '<a target="_blank" ');
