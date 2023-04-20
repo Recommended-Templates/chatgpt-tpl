@@ -63,7 +63,7 @@ a {
                 {{ info.btnName || "Link" }}
               </a>
             </div>
-            <div class="ml-2">
+            <div class="ml-2" v-if="!info.apiKey">
               <img
                 src="img/key.svg"
                 width="22"
