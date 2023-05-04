@@ -1,7 +1,9 @@
+
+
 <template>
   <div>
     <div class="bg-white">
-      <div class="chat-wrap pt-3 pb-3 pos-r">
+      <div class="chat-wrap pos-r">
         <div class="al-c">
           <img :src="logo" class="mr-3 avatar" />
           <div class="mr-auto shrink-1">

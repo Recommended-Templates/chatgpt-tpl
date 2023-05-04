@@ -144,7 +144,10 @@ export default {
         await toClipboard(text);
         console.log("Copied to clipboard");
         this.copyText = text;
-        setTimeout(() => {
+        if (this.timing) {
+          clearTimeout(this.timing);
+        }
+        this.timing = setTimeout(() => {
           this.copyText = "";
         }, 1e3);
       } catch (e) {

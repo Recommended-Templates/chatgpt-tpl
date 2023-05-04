@@ -54,6 +54,9 @@ a {
         :apiKey="apiKey"
         @new-key="onNewApiKey"
       ></chat-header>
+
+      <chat-session></chat-session>
+
       <div class="flex-1 ov-a" ref="chatList" @scroll="onScroll">
         <div class="chat-wrap">
           <chat-list
@@ -110,6 +113,7 @@ a {
 import { mapState } from "vuex";
 import { SSE } from "sse";
 import ChatHeader from "./chat-header.vue";
+import ChatSession from "./chat-session.vue";
 import ChatList from "./chat-list.vue";
 import { throttle } from "../../utils/timer";
 import Axios from "axios";
@@ -117,6 +121,7 @@ import Axios from "axios";
 export default {
   components: {
     ChatHeader,
+    ChatSession,
     ChatList,
   },
   data() {
@@ -304,6 +309,7 @@ export default {
       this.msgList.push({
         content,
         role,
+        time: Date.now(),
       });
       this.storMsgList();
     },
