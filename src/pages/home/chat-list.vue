@@ -69,7 +69,13 @@
     >
       <img v-if="!it.isMe" :src="logo" class="avatar" />
       <div class="m-3 mt-0 bdrs-3 chat-msg">
-        <div v-html="it.msg"></div>
+        <img
+          src="img/loading.svg"
+          height="22"
+          class="d-b white"
+          v-if="!it.msg"
+        />
+        <div v-else v-html="it.msg"></div>
       </div>
       <img v-if="it.isMe" :src="avatar" class="avatar" />
     </li>

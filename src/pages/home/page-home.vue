@@ -209,7 +209,7 @@ export default {
         return [
           ...this.msgList,
           {
-            content: this.lastMsg || "...",
+            content: this.lastMsg,
             role: "assistant",
           },
         ];
