@@ -18,6 +18,7 @@
     "solidjs-use": "^1.2.0",
     "sse": "https://github.com/mpetazzoni/sse.js",
     "vue": "^3.2.13",
+    "vue-clipboard3": "^2.0.0",
     "vue-router": "^4.1.6",
     "vuex": "^4.1.0"
   },

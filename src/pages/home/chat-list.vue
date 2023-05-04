@@ -76,6 +76,24 @@
           v-if="!it.msg"
         />
         <div v-else v-html="it.msg"></div>
+        <div
+          class="pos-a btm-0 pa-2 pb-0"
+          style="right: -30px"
+          v-if="it.msg && !it.isMe"
+        >
+          <span
+            v-if="copyText == it.content"
+            class="suc-1 fz-12 pos-a left-0 ml-2"
+            style="top: -16px; width: 60px"
+            >Copied</span
+          >
+          <img
+            src="img/copy.svg"
+            height="16"
+            class="hover-1"
+            @click="onCopy(it.content)"
+          />
+        </div>
       </div>
       <img v-if="it.isMe" :src="avatar" class="avatar" />
     </li>
@@ -86,6 +104,9 @@
 import MarkdownIt from "markdown-it/lib";
 import Highlight from "markdown-it-highlightjs";
 import "highlight.js";
+import useClipboard from "vue-clipboard3";
+
+const { toClipboard } = useClipboard();
 
 const md = MarkdownIt({
   linkify: true,
@@ -97,6 +118,11 @@ export default {
     list: Array,
     logo: String,
     avatar: String,
+  },
+  data() {
+    return {
+      copyText: "",
+    };
   },
   computed: {
     chatList() {
@@ -110,6 +136,20 @@ export default {
           msg,
         };
       });
+    },
+  },
+  methods: {
+    async onCopy(text) {
+      try {
+        await toClipboard(text);
+        console.log("Copied to clipboard");
+        this.copyText = text;
+        setTimeout(() => {
+          this.copyText = "";
+        }, 1e3);
+      } catch (e) {
+        console.error(e);
+      }
     },
   },
 };
