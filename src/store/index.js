@@ -23,6 +23,7 @@ const store = createStore({
         data: {},
       },
       ...storState,
+      streamingId: null,
     };
   },
   mutations: {

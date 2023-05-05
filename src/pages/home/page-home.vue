@@ -49,13 +49,12 @@ a {
   <div>
     <div class="h-flex vh100 bg-chat">
       <chat-header
+        ref="header"
         :info="info"
         :logo="logo"
         :apiKey="apiKey"
         @new-key="onNewApiKey"
       ></chat-header>
-
-      <chat-session></chat-session>
 
       <div class="flex-1 ov-a" ref="chatList" @scroll="onScroll">
         <div class="chat-wrap">
@@ -83,6 +82,7 @@ a {
               placeholder="Enter something..."
               v-model="inputMsg"
               @keyup.enter="onSend"
+              @focus="onFocus"
             />
             <button class="chat-btn ml-3" @click="onSend">Send</button>
             <div class="pa-2 ml-1 hover-1" @click="onClear">
@@ -113,7 +113,6 @@ a {
 import { mapState } from "vuex";
 import { SSE } from "sse";
 import ChatHeader from "./chat-header.vue";
-import ChatSession from "./chat-session.vue";
 import ChatList from "./chat-list.vue";
 import { throttle } from "../../utils/timer";
 import Axios from "axios";
@@ -121,7 +120,6 @@ import Axios from "axios";
 export default {
   components: {
     ChatHeader,
-    ChatSession,
     ChatList,
   },
   data() {
@@ -131,7 +129,7 @@ export default {
       inputMsg: "",
       info: {},
       apiKey,
-      msgList: JSON.parse(localStorage.msgList || "[]"),
+      msgList: this.getMsgList(),
       lastMsg: "",
       streaming: false,
       isBtm: true,
@@ -154,12 +152,13 @@ export default {
   computed: {
     ...mapState({
       asMobile: (s) => s.asMobile,
+      noticeMsg: (s) => s.noticeMsg,
     }),
     logo() {
       return this.info.logo || "img/logo-ai.jpg";
     },
     comboList() {
-      if (this.lastMsg || this.streaming)
+      if (this.lastMsg || this.streaming) {
         return [
           ...this.msgList,
           {
@@ -167,6 +166,7 @@ export default {
             role: "assistant",
           },
         ];
+      }
       return this.msgList;
     },
   },
@@ -178,17 +178,47 @@ export default {
         });
       }
     },
+    noticeMsg({ name }) {
+      if (name == "change-session") {
+        this.msgList = this.getMsgList();
+        this.goBtm();
+      } else if (name == "abort-chat") {
+        this.lastSource.close();
+      }
+    },
+    streaming(val) {
+      this.$setState({
+        streamingId: val ? this.getSessionId() : null,
+      });
+    },
   },
   mounted() {
     if (!this.msgList.length) {
       this.pushMsg("Hello! How can I assist you today?", 2);
-    } else
-      setTimeout(() => {
-        this.smoothToBtm(0);
-      }, 200);
+    } else {
+      this.goBtm();
+    }
+
     this.getConfig();
   },
   methods: {
+    onFocus() {
+      this.$refs.header.showSession = false;
+    },
+    goBtm() {
+      setTimeout(() => {
+        this.smoothToBtm(0);
+      }, 200);
+    },
+    getSessionId() {
+      let id = localStorage.sessionId;
+      if (id == 0) id = "";
+      return id;
+    },
+    getMsgList() {
+      const id = this.getSessionId();
+      return JSON.parse(localStorage["msgList" + id] || "[]");
+    },
     onNewApiKey(key) {
       localStorage.apiKey = this.apiKey = key;
     },
@@ -238,7 +268,7 @@ export default {
     },
     onSend() {
       if (!this.apiKey) {
-        this.showSetting = true;
+        this.$refs.header.showSetting = true;
         return;
       }
       let msg = this.inputMsg.trim();
@@ -309,7 +339,7 @@ export default {
       this.msgList.push({
         content,
         role,
-        time: Date.now(),
+        // time: Date.now(),
       });
       this.storMsgList();
     },
@@ -330,13 +360,19 @@ export default {
       };
     },
     onClear() {
+      if (this.msgList.length) {
+        const val = confirm("Are you sure to clear this chat session?");
+        if (!val) return;
+      }
       this.streaming = false;
       this.inputMsg = "";
       this.msgList = [];
       this.storMsgList();
+      this.$setMsg("clearMsg");
     },
     storMsgList() {
-      localStorage.msgList = JSON.stringify(this.msgList);
+      const id = this.getSessionId();
+      localStorage["msgList" + id] = JSON.stringify(this.msgList);
     },
   },
 };

@@ -1,11 +1,34 @@
-
+<style lang="scss">
+@media screen and (max-width: 1290px) {
+  .chat-session {
+    left: 0;
+    top: 100%;
+    width: 100%;
+    display: none;
+    &.show {
+      display: block;
+    }
+  }
+}
+</style>
 
 <template>
   <div>
     <div class="bg-white">
       <div class="chat-wrap pos-r">
+        <chat-session
+          :class="{
+            show: showSession,
+          }"
+          @close="showSession = false"
+        ></chat-session>
+
         <div class="al-c">
-          <img :src="logo" class="mr-3 avatar" />
+          <img
+            :src="logo"
+            class="mr-3 avatar"
+            @click="showSession = !showSession"
+          />
           <div class="mr-auto shrink-1">
             <h2 class="fz-16">{{ info.title || "ChatGPT Demo" }}</h2>
             <p class="gray fz-13 mt-1 line-3" v-if="info.bio">
@@ -64,7 +87,12 @@
 </template>
 
 <script>
+import ChatSession from "./chat-session.vue";
+
 export default {
+  components: {
+    ChatSession,
+  },
   props: {
     info: Object,
     logo: String,
@@ -74,6 +102,7 @@ export default {
     return {
       showSetting: false,
       newApiKey: this.apiKey,
+      showSession: false,
     };
   },
   methods: {

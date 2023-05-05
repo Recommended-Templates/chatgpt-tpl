@@ -11,5 +11,20 @@ app.use(store);
 const global = app.config.globalProperties;
 global.$setState = setState;
 global.$setStore = setStore;
+global.$setMsg = (noticeMsg) => {
+  if (typeof noticeMsg == "string") {
+    noticeMsg = {
+      name: noticeMsg,
+    };
+  }
+  setState({
+    noticeMsg,
+  });
+};
+global.$sleep = (msec = 300) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, msec);
+  });
+};
 
 app.mount("#app");
